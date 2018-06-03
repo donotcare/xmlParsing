@@ -1,8 +1,10 @@
 package playground;
 
 import com.google.common.io.Resources;
+import org.w3c.dom.NodeList;
 
 import javax.xml.stream.events.XMLEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ import static java.util.logging.Level.SEVERE;
 public class XmlParser {
     private static final Logger log = Logger.getLogger(XmlParser.class.getName());
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         List<String> ingridients = new ArrayList<>();
         URL xmlUrl = Resources.getResource("recipes.xml");
         try (StaxStreamProcessor xmlProcessor = new StaxStreamProcessor(xmlUrl.openStream())) {
@@ -25,5 +27,8 @@ public class XmlParser {
             log.log(SEVERE, "Error", e);
         }
 
+        XpathProcessor xpathProcessor = new XpathProcessor(xmlUrl.openStream());
+        NodeList nodes = xpathProcessor.evaluate("r:collection/r:recipe/r:date");
+        System.out.println(nodes.item(1).getTextContent());
     }
 }

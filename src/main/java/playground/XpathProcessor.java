@@ -1,14 +1,13 @@
 package playground;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,6 +19,7 @@ public class XpathProcessor {
 
     static {
         try {
+            DOCUMENT_FACTORY.setNamespaceAware(true);
             DOCUMENT_BUILDER = DOCUMENT_FACTORY.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new IllegalStateException(e);
@@ -36,11 +36,17 @@ public class XpathProcessor {
         }
     }
 
-    public void evaluate(String expression) {
-        System.out.println("evaluate");
+    public NodeList evaluate(String expression) {
+        try {
+            return (NodeList) getXpathExpression(expression).evaluate(doc, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     private XPathExpression getXpathExpression(String expression) throws XPathExpressionException {
-        return XPATH_FACTORY.newXPath().compile(expression);
+        XPath xpath = XPATH_FACTORY.newXPath();
+        xpath.setNamespaceContext(new NamespaceResolver());
+        return xpath.compile(expression);
     }
 }
