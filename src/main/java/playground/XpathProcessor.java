@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,13 +28,15 @@ public class XpathProcessor {
     }
 
     private final Document doc;
+    private final NamespaceContext namespaceContext;
 
-    public XpathProcessor(InputStream is) {
+    XpathProcessor(InputStream is) {
         try {
             this.doc = DOCUMENT_BUILDER.parse(is);
+            this.namespaceContext = new NamespaceResolver(doc);
         } catch (SAXException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        throw new IllegalStateException(e);
+    }
     }
 
     public NodeList evaluate(String expression) {
@@ -46,7 +49,7 @@ public class XpathProcessor {
 
     private XPathExpression getXpathExpression(String expression) throws XPathExpressionException {
         XPath xpath = XPATH_FACTORY.newXPath();
-        xpath.setNamespaceContext(new NamespaceResolver());
+        xpath.setNamespaceContext(namespaceContext);
         return xpath.compile(expression);
     }
 }

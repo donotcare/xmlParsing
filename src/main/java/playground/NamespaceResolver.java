@@ -1,23 +1,36 @@
 package playground;
 
+import org.w3c.dom.Document;
+
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import java.util.Iterator;
 
 public class NamespaceResolver implements NamespaceContext {
-    @Override
+    private Document sourceDocument;
+
+    NamespaceResolver(Document document) {
+        sourceDocument = document;
+    }
+
     public String getNamespaceURI(String prefix) {
-        if (prefix == null) throw new NullPointerException("Null prefix");
-        else if ("r".equals(prefix)) return "http://www.brics.dk/ixwt/recipes";
-        return XMLConstants.NULL_NS_URI;
+        if (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+            return sourceDocument.lookupNamespaceURI(null);
+        } else {
+            String namespaceURI = sourceDocument.lookupNamespaceURI(prefix);
+            if(namespaceURI == null) {
+                return sourceDocument.lookupNamespaceURI(null);
+            } else {
+                return namespaceURI;
+            }
+        }
     }
 
-    @Override
     public String getPrefix(String namespaceURI) {
-        return null;
+        return sourceDocument.lookupPrefix(namespaceURI);
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
     public Iterator getPrefixes(String namespaceURI) {
         return null;
     }
