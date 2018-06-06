@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<collection xmlns="http://www.brics.dk/ixwt/recipes">
+<collection xmlns="http://www.brics.dk/ixwt/recipes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation = "http://www.brics.dk/ixwt/recipes recipes.xsd">
   <description>
      Some recipes used in the XML tutorial.
   </description>
