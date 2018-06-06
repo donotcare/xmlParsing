@@ -13,12 +13,13 @@ public class NamespaceResolver implements NamespaceContext {
         sourceDocument = document;
     }
 
+    @Override
     public String getNamespaceURI(String prefix) {
         if (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
             return sourceDocument.lookupNamespaceURI(null);
         } else {
             String namespaceURI = sourceDocument.lookupNamespaceURI(prefix);
-            if(namespaceURI == null) {
+            if (namespaceURI == null) {
                 return sourceDocument.lookupNamespaceURI(null);
             } else {
                 return namespaceURI;
@@ -26,11 +27,12 @@ public class NamespaceResolver implements NamespaceContext {
         }
     }
 
+    @Override
     public String getPrefix(String namespaceURI) {
         return sourceDocument.lookupPrefix(namespaceURI);
     }
 
-    @SuppressWarnings("rawtypes")
+    @Override
     public Iterator getPrefixes(String namespaceURI) {
         return null;
     }
