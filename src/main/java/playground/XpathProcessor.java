@@ -35,8 +35,8 @@ public class XpathProcessor {
             this.doc = DOCUMENT_BUILDER.parse(is);
             this.namespaceContext = new NamespaceResolver(doc);
         } catch (SAXException | IOException e) {
-        throw new IllegalStateException(e);
-    }
+            throw new IllegalStateException(e);
+        }
     }
 
     public NodeList evaluate(String expression) {
