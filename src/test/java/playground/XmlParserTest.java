@@ -53,7 +53,7 @@ class XmlParserTest {
     }
 
     @Test
-    void xQuery() throws XQException, IOException, URISyntaxException {
+    void getButterAmountWithXQuery() throws XQException, IOException, URISyntaxException {
         URL xmlUrl = Resources.getResource("recipes.xml");
         String query = Resources.toString(Resources.getResource("recipes.xqy"), Charsets.UTF_8);
         XQueryProcessor processor = new XQueryProcessor();
