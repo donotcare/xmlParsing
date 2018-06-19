@@ -33,5 +33,10 @@
             <scope>test</scope>
             <version>RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.4</version>
+        </dependency>
     </dependencies>
 </project>

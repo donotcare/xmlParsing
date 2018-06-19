@@ -1,5 +1,6 @@
 package playground;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.NodeList;
@@ -8,8 +9,11 @@ import playground.jaxb.model.Ingredient;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.xquery.XQException;
+import javax.xml.xquery.XQResultSequence;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.stream.IntStream;
 
@@ -34,7 +38,7 @@ class XmlParserTest {
         URL xmlUrl = Resources.getResource("recipes.xml");
         XpathProcessor xpathProcessor = new XpathProcessor(xmlUrl.openStream());
         NodeList nodes = xpathProcessor.evaluate("//r:ingredient[@name='butter']/@amount");
-        double amount = IntStream.range(0, nodes.getLength()).mapToObj(i-> nodes.item(i).getNodeValue()).mapToDouble(Double::parseDouble).sum();
+        double amount = IntStream.range(0, nodes.getLength()).mapToObj(i -> nodes.item(i).getNodeValue()).mapToDouble(Double::parseDouble).sum();
         assertEquals(0.75, amount);
     }
 
@@ -46,5 +50,19 @@ class XmlParserTest {
         String xml = parser.marshal(ingredient);
         Ingredient ingredientFromXml = parser.unmarshal(new StringReader(xml), Ingredient.class);
         assertEquals("10", ingredientFromXml.getAmount());
+    }
+
+    @Test
+    void xQuery() throws XQException, IOException, URISyntaxException {
+        URL xmlUrl = Resources.getResource("recipes.xml");
+        String query = Resources.toString(Resources.getResource("recipes.xqy"), Charsets.UTF_8);
+        XQueryProcessor processor = new XQueryProcessor();
+        XQResultSequence result = processor.evaluate(query.replace("@xmlDocPath", xmlUrl.toURI().getPath()));
+        double amount = 0;
+        while (result.next()) {
+            amount += Double.parseDouble(result.getItemAsString(null));
+        }
+
+        assertEquals(0.75, amount);
     }
 }
